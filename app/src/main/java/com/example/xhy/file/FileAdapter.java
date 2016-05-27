@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.DialogInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -100,6 +102,7 @@ public class FileAdapter extends BaseAdapter {
 
         holder.bindData(data.get(position));
 
+
         return convertView;
     }
 
@@ -121,21 +124,21 @@ public class FileAdapter extends BaseAdapter {
 
         public ViewHolder(View v) {
 
-
-
             icon = (ImageView) v.findViewById(R.id.imageView);
             fileName = (TextView) v.findViewById(R.id.textView_name);
             fileInfo = (TextView) v.findViewById(R.id.textView_info);
             more = (ImageButton) v.findViewById(R.id.imageButton);
 
-            listener = new PopMenuListener();
+
+            listener = new PopMenuListener(v);
+
 
             more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     //  创建弹出菜单
-                    PopupMenu menu = new PopupMenu(context,v);
+                    PopupMenu menu = new PopupMenu(context, v);
 
                     //  加载 XML 文件
                     menu.inflate(R.menu.file_item);
@@ -159,13 +162,15 @@ public class FileAdapter extends BaseAdapter {
 
             int size = (f.list() == null) ? 0 : f.list().length;
             fileInfo.setText(f.isFile()
-                    ?  String.format("文件：%d 字节",f.length())
-                    :  String.format("目录：%d 文件",size));
-
+                    ? String.format("文件：%d 字节", f.length())
+                    : String.format("目录：%d 文件",size));
 
             listener.setFile(f);
 
+
         }
+
+
 
         /**
          * 菜单监听器
@@ -176,6 +181,11 @@ public class FileAdapter extends BaseAdapter {
              * 操作文件
              */
             private File file;
+            private View v;
+
+            public PopMenuListener(View v){
+                this.v = v;
+            }
 
             /**
              * 菜单项点击
@@ -203,8 +213,10 @@ public class FileAdapter extends BaseAdapter {
 
             private void doRename() {
                 showToast("重命名");
-
+               // showRenameDialog(v);
             }
+
+
 
             private void doRemove() {
 
@@ -225,7 +237,9 @@ public class FileAdapter extends BaseAdapter {
             public void setFile(File file) {
 
                 this.file = file;
+
             }
         }
     }
+
 }
