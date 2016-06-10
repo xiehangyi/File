@@ -274,12 +274,34 @@ public class MainActivity extends AppCompatActivity {
                 doAdd();
                 break;
             case R.id.action_sort_size:
-                Toast.makeText(MainActivity.this, "OK", Toast.LENGTH_SHORT).show();
-                try {
-                    doSort_size();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                View v = getLayoutInflater().inflate(R.layout.progress_demo,null);
+                TextView textView = (TextView) v.findViewById(R.id.textView_sortSize);
+                textView.setText("文件排序中，请等待片刻...");
+                final Dialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setView(v)
+                        .create();
+                dialog.show();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            doSort_size();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                    dialog.dismiss();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+
                 break;
             case R.id.action_sort_word:
                 doSort_word();
@@ -444,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
         for (File file : files_sort_lat) {
             data.add(file);
         }
-        adapter.notifyDataSetChanged();
+
 
     }
 

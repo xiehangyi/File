@@ -2,53 +2,80 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    android:padding="8dp"
     android:descendantFocusability="blocksDescendants"
-    >
+    android:padding="8dp">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:id="@+id/imageView"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:src = "@drawable/ic_folder_open_24dp"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="文件名称"
-        android:textSize="18sp"
-        android:id="@+id/textView_name"
         android:layout_alignParentTop="true"
+        android:src="@drawable/ic_folder_open_24dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="40dp"
         android:layout_toEndOf="@+id/imageView"
-        android:layout_marginStart="28dp" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="概要信息"
-        android:id="@+id/textView_info"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/textView_name" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/textView_size"
-        android:layout_toRightOf="@id/textView_info"
-        android:layout_marginLeft="60dp"
-        android:text=""
-        />
+            <TextView
+                android:id="@+id/textView_name"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="28dp"
+                android:layout_weight="1"
+                android:text="文件名称"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textView_info"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="28dp"
+                android:layout_weight="1"
+                android:text="概要信息" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:layout_marginLeft="20dp"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView_size"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </LinearLayout>
+    </LinearLayout>
 
     <ImageButton
+        android:id="@+id/imageButton"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:id="@+id/imageButton"
-        android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        android:src = "@drawable/ic_more_vert_24dp"
-        style="@style/Base.Widget.AppCompat.Button.Borderless" />
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_more_vert_24dp" />
 </RelativeLayout>
