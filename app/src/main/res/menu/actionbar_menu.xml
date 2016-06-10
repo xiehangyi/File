@@ -8,6 +8,52 @@
         android:title=""
         android:icon="@drawable/ic_keyboard_backspace_24dp"
         app:showAsAction="always"
-        ></item>
+       />
+    <item
+        android:id="@+id/item_sear"
+        android:title=""
+        android:icon="@drawable/ic_search_24dp"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        />
+    <item
+        android:id="@+id/item_add"
+        android:title=""
+        android:icon="@drawable/ic_add_24dp"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/item_sort"
+        android:title="排序"
+        android:icon="@drawable/ic_sort_24dp"
+        app:showAsAction="always"
+        >
+        <menu>
+            <group
+                android:id="@+id/group_sort"
+                android:checkableBehavior="single"
+                >
+
+                <item
+                    android:id="@+id/action_sort_size"
+                    android:title="文件大小"
+                    />
+                <item
+                    android:id="@+id/action_sort_date"
+                    android:title="文件日期"
+                    />
+                <item
+                    android:id="@+id/action_sort_type"
+                    android:title="文件类型"
+                    />
+                <item
+                    android:id="@+id/action_sort_word"
+                    android:title="文件名称"
+                    />
+            </group>
+        </menu>
+
+    </item>
+
 
 </menu>

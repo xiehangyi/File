@@ -33,6 +33,16 @@
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/textView_name" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/textView_size"
+        android:layout_toRightOf="@id/textView_info"
+        android:layout_marginLeft="60dp"
+        android:text=""
+        />
+
     <ImageButton
         android:layout_width="30dp"
         android:layout_height="30dp"
