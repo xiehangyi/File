@@ -182,10 +182,30 @@ public class MainActivity extends AppCompatActivity {
         MenuItem item = menu.findItem(R.id.item_sear);
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setQueryHint("请输入文件名");
+        // 设置确认
+        searchView.setSubmitButtonEnabled(true);
+
+//        searchView.setSuggestionsAdapter();
+//        searchView.setOnSuggestionListener();
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(MainActivity.this, "搜索: " + query, Toast.LENGTH_SHORT).show();
+
+                // 显示等待框
+                View v = getLayoutInflater().inflate(R.layout.progress_demo, null);
+                Dialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setView(v)
+                        .create();
+                dialog.show();
+
+                stackfiles.push(files[0].getParentFile());
+                search_query(query);
+                dialog.dismiss();
+
+
                 return false;
             }
 
@@ -197,6 +217,50 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
+
+    private void search_query(String query) {
+
+        char[] c1 = query.toCharArray();
+        char[] c2;
+        File[] file_search = files;
+        ArrayList<File> arrayList = new ArrayList<>();
+        File f;
+        Boolean b;
+
+        for (int j = 0; j < file_search.length; j++) {
+
+            f = file_search[j];
+            c2 = f.getName().toCharArray();
+            b = false;
+            for (int i = 0; i < c1.length; i++) {
+
+                for (int m = 0; m < c2.length; ) {
+                    if(c1[i] == c2[m]){
+                        b = true;
+                        break;
+                    }
+                    m++;
+                    if(m == c2.length){
+                        b = false;
+                    }
+                }
+                if(!b){
+                    break;
+                }
+            }
+            Log.v("aa",f.getName()+String.valueOf(b));
+            if(b){
+                arrayList.add(f);
+            }
+        }
+
+        data.clear();
+        for (File file:arrayList){
+            data.add(file);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -220,6 +284,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_sort_word:
                 doSort_word();
                 break;
+            case R.id.action_sort_length:
+                doSort_length();
+                break;
             case R.id.action_sort_date:
                 showToast("该功能暂时还未实现，敬请期待");
                 break;
@@ -231,6 +298,41 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 按文件名长度排序
+     */
+    private void doSort_length() {
+
+        File[] file_sort = files;
+        File[] file_sort_lat = new File[files.length];
+        for(int i = 0; i < file_sort.length; i++){
+
+            file_sort_lat[i] = file_sort[i];
+            for(int j = i; j > 0; j--) {
+
+                if(file_sort_lat[j].getName().length() < file_sort_lat[j-1].getName().length()) {
+
+                    File temp = file_sort_lat[j];
+                    file_sort_lat[j] = file_sort_lat[j-1];
+                    file_sort_lat[j-1] = temp;
+                } else {
+                    break;
+                }
+
+            }
+        }
+
+        data.clear();
+        for(File file:file_sort_lat) {
+            data.add(file);
+        }
+        adapter.notifyDataSetChanged();
+
+    }
+
+    /**
+     * 按首字母顺序排序
+     */
     private void doSort_word() {
 
         // 得到该目录下所有文件
@@ -457,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showToast(String msg) {
-        Toast.makeText(MainActivity.this, msg , Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
     class MyFilter implements FileFilter {

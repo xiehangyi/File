@@ -50,6 +50,10 @@
                     android:id="@+id/action_sort_word"
                     android:title="文件名称"
                     />
+                <item
+                    android:id="@+id/action_sort_length"
+                    android:title="文件长度"
+                    />
             </group>
         </menu>
 
