@@ -34,7 +34,7 @@ public class FileAdapter extends BaseAdapter {
     private ArrayList<File> data;
 
     private LayoutInflater layoutInflater;
-    private static HashMap<String ,String> map;
+    private static HashMap<String, String> map;
 
     /**
      * 创建文件适配器(数据和视图间的桥)
@@ -142,7 +142,6 @@ public class FileAdapter extends BaseAdapter {
 
         public ViewHolder(View v, int position) {
 
-
             icon = (ImageView) v.findViewById(R.id.imageView);
             fileName = (TextView) v.findViewById(R.id.textView_name);
             fileInfo = (TextView) v.findViewById(R.id.textView_info);
@@ -185,28 +184,30 @@ public class FileAdapter extends BaseAdapter {
 
             int size = (f.list() == null) ? 0 : f.list().length;
             fileInfo.setText(f.isFile()
-                    ? String.format("文件：%d 字节", getFileSize(f))
+                    ? String.format("文件：%s", FormatFileSize(getFileSize(f)))
                     : String.format("目录：%d 文件", size));
 
+            if (map.get(f.getAbsolutePath()) == null) {
 
-            if(map.get(f.getName())==null) {
-                long fileSize;
-                String filesizeStr = "";
-                if (!f.isFile()) {
-
+                if (f.isDirectory()) {
+                    long fileSize;
+                    String filesizeStr = "";
                     fileSize = getFileSizes(f);
                     filesizeStr = FormatFileSize(fileSize);
                     filesize.setText(filesizeStr);
-                    map.put(f.getName(), filesizeStr);
+                    map.put(f.getAbsolutePath(), filesizeStr);
+
+
+                } else if (f.isFile()) {
+                    filesize.setText("");
                 }
-            }else {
-                filesize.setText(map.get(f.getName()));
+            } else {
+                filesize.setText(map.get(f.getAbsolutePath()));
             }
 
             listener.setFile(f);
 
         }
-
 
 
         private String FormatFileSize(long size) {
@@ -313,10 +314,10 @@ public class FileAdapter extends BaseAdapter {
 
         private void doProperty() {
 
-            View view = layoutInflater.inflate(R.layout.property_demo,null);
+            View view = layoutInflater.inflate(R.layout.property_demo, null);
             TextView textView = (TextView) view.findViewById(R.id.text_fileSize);
 
-            if(map.get(file.getName())==null) {
+            if (map.get(file.getAbsolutePath()) == null) {
                 long fileSize;
                 String filesizeStr = "";
                 if (!file.isFile()) {
@@ -324,14 +325,14 @@ public class FileAdapter extends BaseAdapter {
                         fileSize = getFileSizes(file);
                         filesizeStr = FormatFileSize(fileSize);
                         textView.setText(filesizeStr);
-                        map.put(file.getName(), filesizeStr);
+                        map.put(file.getAbsolutePath(), filesizeStr);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
-            }else {
-                textView.setText(map.get(file.getName()));
+            } else {
+                textView.setText(map.get(file.getAbsolutePath()));
             }
 
 
@@ -343,6 +344,7 @@ public class FileAdapter extends BaseAdapter {
 
 
         }
+
         private String FormatFileSize(long size) {
 
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
@@ -452,7 +454,7 @@ public class FileAdapter extends BaseAdapter {
         }
 
         private void showToast(String msg) {
-            Toast.makeText(context, msg , Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
         }
 
         public void setFile(File file) {
@@ -461,8 +463,6 @@ public class FileAdapter extends BaseAdapter {
 
         }
     }
-
-
 
 
 }
