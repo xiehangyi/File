@@ -14,4 +14,9 @@
     <item
         android:id="@+id/action_copy"
         android:title="复制" />
+
+    <item
+        android:id="@+id/action_property"
+        android:title="属性"
+        />
 </menu>

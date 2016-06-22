@@ -49,12 +49,20 @@
          />
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        >
+    <LinearLayout
+        android:id="@+id/ll_progress"
+        android:layout_width="match_parent"
         android:layout_height="80dp"
+
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="horizontal"
             >
             <TextView
@@ -62,12 +70,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
                 />
             <TextView
                 android:id="@+id/textView_tol"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
                 />
 
         </RelativeLayout>
@@ -75,7 +85,9 @@
         <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:id="@+id/progressBar" />
+    </LinearLayout>
     </LinearLayout>
 </LinearLayout>

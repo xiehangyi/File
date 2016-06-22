@@ -47,7 +47,6 @@ public class FileAdapter extends BaseAdapter {
         this.context = context;
         this.data = data;
         map = new HashMap<>();
-
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -208,29 +207,7 @@ public class FileAdapter extends BaseAdapter {
 
         }
 
-        /**
-         * 用于保存数据
-         */
-        class setData {
 
-            private String[] saveData;
-
-            public setData() {
-
-                saveData = new String[data.size()];
-
-            }
-        }
-
-
-//        private void re(){
-//
-//            file.delete();
-////            showToast("删除");
-//            data.remove(position);
-//            Log.v("aa",String.valueOf(position));
-//            notifyDataSetChanged();
-//        }
 
         private String FormatFileSize(long size) {
 
@@ -327,10 +304,100 @@ public class FileAdapter extends BaseAdapter {
                 case R.id.action_rename:
                     doRename();
                     break;
+                case R.id.action_property:
+                    doProperty();
 
             }
             return true;
         }
+
+        private void doProperty() {
+
+            View view = layoutInflater.inflate(R.layout.property_demo,null);
+            TextView textView = (TextView) view.findViewById(R.id.text_fileSize);
+
+            if(map.get(file.getName())==null) {
+                long fileSize;
+                String filesizeStr = "";
+                if (!file.isFile()) {
+                    try {
+                        fileSize = getFileSizes(file);
+                        filesizeStr = FormatFileSize(fileSize);
+                        textView.setText(filesizeStr);
+                        map.put(file.getName(), filesizeStr);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }else {
+                textView.setText(map.get(file.getName()));
+            }
+
+
+            Dialog dialog = new AlertDialog.Builder(v.getContext())
+                    .setView(view)
+                    .create();
+
+            dialog.show();
+
+
+        }
+        private String FormatFileSize(long size) {
+
+            DecimalFormat decimalFormat = new DecimalFormat("#.00");
+            String fileSizeStr = "";
+            String wrongSize = "0B";
+            if (size == 0) {
+                return wrongSize;
+            }
+            if (size < 1024) {
+                fileSizeStr = decimalFormat.format((double) size) + "B";
+            } else if (size < 1048576) {
+                fileSizeStr = decimalFormat.format((double) size / 1024) + "KB";
+            } else if (size < 1073741824) {
+                fileSizeStr = decimalFormat.format((double) size / 1048576) + "MB";
+            } else {
+                fileSizeStr = decimalFormat.format((double) size / 1073741824) + "GB";
+            }
+
+
+            return fileSizeStr;
+        }
+
+
+        private long getFileSize(File file) throws Exception {
+
+            long size = 0;
+            if (file.exists()) {
+
+                FileInputStream fis = null;
+                fis = new FileInputStream(file);
+                size = fis.available();
+                fis.close();
+            }
+
+            return size;
+        }
+
+        private long getFileSizes(File file) throws Exception {
+
+            long size = 0;
+            if (file.exists()) {
+
+                File[] files_open = file.listFiles();
+                for (File f : files_open) {
+                    if (f.isFile()) {
+                        size += getFileSize(f);
+                    } else {
+                        size += getFileSizes(f);
+                    }
+                }
+            }
+
+            return size;
+        }
+
 
         private void doRename() {
 
@@ -394,6 +461,8 @@ public class FileAdapter extends BaseAdapter {
 
         }
     }
+
+
 
 
 }

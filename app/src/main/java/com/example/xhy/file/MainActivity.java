@@ -9,15 +9,16 @@ import android.os.StatFs;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.text.format.Formatter;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,14 +32,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
-public class MainActivity extends AppCompatActivity {
 
-    long SDkSize;
-    long SDzSize;
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener,GestureDetector.OnGestureListener{
 
 
     // 当前打开的文件
@@ -49,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     TextView textView_path;
     ProgressBar progressBar;
+    LinearLayout ll_progress;
 
     // 文件的绝对路径
     private String abpath;
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     //适配器
     FileAdapter adapter;
     Stack<File> stackfiles;
-
+    private GestureDetector mDetector = new GestureDetector(this);
 
     private boolean isfinish = false;
 
@@ -69,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.listView);
         textView_path = (TextView) findViewById(R.id.textView_path);
+        ll_progress = (LinearLayout) findViewById(R.id.ll_progress);
+        listView.setOnTouchListener(this);
+
 
         initView();
         setProgressPercent();
@@ -81,18 +82,16 @@ public class MainActivity extends AppCompatActivity {
         TextView textView_avi = (TextView) findViewById(R.id.textView_avi);
         TextView textView_tol = (TextView) findViewById(R.id.textView_tol);
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            StatFs fs = new StatFs(Environment.getExternalStorageDirectory().getPath());
 
-            SDzSize = fs.getTotalBytes();
-            int zsize = (int) (SDzSize / 1024 / 1024 / 1024);
-            progressBar.setMax(zsize);
+            int asize = getAvailableExternalMemorySize();
+            progressBar.setProgress(asize);
 
-            SDkSize = fs.getAvailableBytes();
-            int ksize = (int) (SDkSize / 1024 / 1024 / 1024);
-            progressBar.setProgress(ksize);
+            int tsize = getTotalExternalMemorySize();
+            progressBar.setMax(tsize);
 
-            textView_avi.setText("可用:" + String.valueOf(ksize) + "GB");
-            textView_tol.setText("总共:" + String.valueOf(zsize) + "GB");
+            textView_avi.setText("可用:" + String.valueOf(asize) + "GB");
+            textView_tol.setText("总共:" + String.valueOf(tsize) + "GB");
+
 
         } else {
             textView_avi.setText("内存异常，无法显示数据");
@@ -100,16 +99,60 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private void replaceBar(){
-//
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-////        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//
-////        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_backspace_24dp);
-//
-//
-//    }
+    /**
+     *  获取手机外部剩余空间
+     * @return
+     */
+    public static  int getAvailableExternalMemorySize(){
+        StatFs fs = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        long SDkSize = fs.getAvailableBytes();
+        // SD卡可用大小
+        int asize = (int) (SDkSize / 1024 / 1024 / 1024);
+        return asize;
+    }
+
+    /**
+     *  获取手机外部总的空间
+     * @return
+     */
+    public static  int getTotalExternalMemorySize(){
+        StatFs fs = new StatFs(Environment.getExternalStorageDirectory().getPath());
+
+        // SD卡总大小
+        long SDzSize = fs.getTotalBytes();
+        int tsize = (int) (SDzSize / 1024 / 1024 / 1024);
+        return tsize;
+
+    }
+
+
+    /**
+     * 获取手机内部剩余存储空间
+     * @return
+     */
+    public static int getAvailableInternalMemorySize() {
+        File path = Environment.getDataDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long InAsize = stat.getAvailableBytes();
+        int asize = (int) (InAsize / 1024 / 1024 / 1024);
+        Log.v("aa","getAvailableInternalMemorySize:"+String.valueOf(asize));
+        return asize;
+    }
+
+    /**
+     * 获取手机内部总的存储空间
+     * @return
+     */
+    public static int getTotalInternalMemorySize() {
+        File path = Environment.getDataDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long InTSize = stat.getTotalBytes();
+
+        int tsize = (int) (InTSize / 1024 / 1024 / 1024);
+        Log.v("aa","getTotalInternalMemorySize:"+String.valueOf(tsize));
+        return  tsize;
+    }
+
 
 
     private void initView() {
@@ -583,6 +626,52 @@ public class MainActivity extends AppCompatActivity {
     private void showToast(String msg) {
         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+
+        return mDetector.onTouchEvent(event);
+    }
+
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        if(e1.getY() - e2.getY() < 0){
+            ll_progress.setVisibility(View.VISIBLE);
+        } else {
+            ll_progress.setVisibility(View.GONE);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
+    }
+
+
 
     class MyFilter implements FileFilter {
 
