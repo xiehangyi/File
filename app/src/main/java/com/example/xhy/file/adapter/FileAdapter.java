@@ -1,4 +1,4 @@
-package com.example.xhy.file;
+package com.example.xhy.file.adapter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,6 +18,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.DialogInterface;
+
+import com.example.xhy.file.R;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -24,12 +24,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.xhy.file.adapter.FileAdapter;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -310,6 +310,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         switch (item.getItemId()) {
 
+            case R.id.item_type:
+                Intent intent = new Intent(MainActivity.this,TypeActivity.class);
+                startActivity(intent);
+                break;
             case R.id.item_back:
                 doBack();
                 break;
